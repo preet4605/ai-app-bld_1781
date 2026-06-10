@@ -53,7 +53,7 @@ jobs:
             }
             rootProject.name = "GeneratedApp"
             include(":app")
-            EOF
+          EOF
           fi
 
           # 2. Create root build.gradle.kts if missing
@@ -63,7 +63,7 @@ jobs:
                 id("com.android.application") version "8.1.1" apply false
                 id("org.jetbrains.kotlin.android") version "1.8.10" apply false
             }
-            EOF
+          EOF
           fi
 
           # 3. Create app/build.gradle.kts if missing
@@ -127,7 +127,7 @@ jobs:
                 implementation("androidx.compose.ui:ui-tooling-preview")
                 implementation("androidx.compose.material3:material3")
             }
-            EOF
+          EOF
           fi
 
           # 4. Generate Gradle wrapper files
