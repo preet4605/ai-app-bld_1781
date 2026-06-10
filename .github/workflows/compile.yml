@@ -34,11 +34,19 @@ jobs:
 
       - name: Bootstrap Android Project
         run: |2
-          # 1. Generate Gradle wrapper files (done first to avoid Gradle 9.x evaluation errors on incompatible AGP version)
+          # 1. Create a minimal settings.gradle.kts if it doesn't exist so gradle wrapper works without errors
+          if [ ! -f settings.gradle.kts ]; then
+            echo 'rootProject.name = "Temp"' > settings.gradle.kts
+            TEMP_SETTINGS_CREATED=true
+          else
+            TEMP_SETTINGS_CREATED=false
+          fi
+
+          # 2. Generate Gradle wrapper files (done first to avoid Gradle 9.x evaluation errors on incompatible AGP version)
           gradle wrapper --gradle-version 8.0
 
-          # 2. Create root settings.gradle.kts if missing
-          if [ ! -f settings.gradle.kts ]; then
+          # 3. Overwrite with real settings.gradle.kts if we created a temporary one
+          if [ "$TEMP_SETTINGS_CREATED" = "true" ]; then
             cat << 'EOF' > settings.gradle.kts
             pluginManagement {
                 repositories {
