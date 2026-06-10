@@ -33,7 +33,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Bootstrap Android Project
-        run: |
+        run: |2
           # 1. Create root settings.gradle.kts if missing
           if [ ! -f settings.gradle.kts ]; then
             cat << 'EOF' > settings.gradle.kts
