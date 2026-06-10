@@ -34,7 +34,10 @@ jobs:
 
       - name: Bootstrap Android Project
         run: |2
-          # 1. Create root settings.gradle.kts if missing
+          # 1. Generate Gradle wrapper files (done first to avoid Gradle 9.x evaluation errors on incompatible AGP version)
+          gradle wrapper --gradle-version 8.0
+
+          # 2. Create root settings.gradle.kts if missing
           if [ ! -f settings.gradle.kts ]; then
             cat << 'EOF' > settings.gradle.kts
             pluginManagement {
@@ -56,7 +59,7 @@ jobs:
           EOF
           fi
 
-          # 2. Create root build.gradle.kts if missing
+          # 3. Create root build.gradle.kts if missing
           if [ ! -f build.gradle.kts ]; then
             cat << 'EOF' > build.gradle.kts
             plugins {
@@ -66,7 +69,7 @@ jobs:
           EOF
           fi
 
-          # 3. Create app/build.gradle.kts if missing
+          # 4. Create app/build.gradle.kts if missing
           if [ ! -f app/build.gradle.kts ]; then
             mkdir -p app
             cat << 'EOF' > app/build.gradle.kts
@@ -130,9 +133,6 @@ jobs:
           EOF
           fi
 
-          # 4. Generate Gradle wrapper files
-          gradle wrapper --gradle-version 8.0
-
           # 5. Generate Keystore if missing
           if [ ! -f app/keystore.jks ]; then
             keytool -genkeypair -v \
@@ -153,7 +153,7 @@ jobs:
 
       - name: Sign APK
         run: |
-          $ANDROID_HOME/build-tools/33.0.1/apksigner sign \
+          $(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -n 1)/apksigner sign \
             --ks app/keystore.jks \
             --ks-pass pass:testpass123 \
             --key-pass pass:testpass123 \
