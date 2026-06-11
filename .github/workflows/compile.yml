@@ -159,14 +159,16 @@ jobs:
           EOF
           fi
 
-          # 5c. Create default Application class if it's missing
+          # 5c. Create default Application class if it's missing and not already declared
           mkdir -p app/src/main/java/com/generated/app
-          if [ ! -f app/src/main/java/com/generated/app/App.kt ]; then
-            cat << 'EOF' > app/src/main/java/com/generated/app/App.kt
+          if ! grep -rn "class App" app/src/main/java/ >/dev/null 2>&1; then
+            if [ ! -f app/src/main/java/com/generated/app/App.kt ]; then
+              cat << 'EOF' > app/src/main/java/com/generated/app/App.kt
           package com.generated.app
           import android.app.Application
           class App : Application()
           EOF
+            fi
           fi
 
           # 6. Create app/build.gradle.kts if missing
