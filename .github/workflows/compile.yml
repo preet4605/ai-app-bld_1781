@@ -29,20 +29,8 @@ jobs:
           if [ -d "$SDK_PATH" ]; then
             echo "Using Android SDK at $SDK_PATH"
             mkdir -p "$SDK_PATH/licenses"
-            echo -e "
-8933bad161af4178b1185d1a37fbf41ea5269c55
-d56f5187479451eabf01601800dd21a0d4055545
-24333f8a63b6825ea9c5514f83c2829b004d1fee
-84831b9409646a918e8057d85ab270295158a5cd
-f4f90f7e9d4e6ddbc197815d3824b995444a70a4
-37b7b1b04e44c2ca5b9024f2b1d6e32bc004d749
-39b390a82b083b0f5de888db0b7987e9c5d799f9
-84f22c1ec485d471550c609594191fe7c1ff44eb
-601085b86cd22f859b545d1d61591e1d90cbd42c
-" > "$SDK_PATH/licenses/android-sdk-license"
-            echo -e "
-84831b9409646a918e8057d85ab270295158a5cd
-" > "$SDK_PATH/licenses/android-sdk-preview-license"
+            echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01601800dd21a0d4055545\n24333f8a63b6825ea9c5514f83c2829b004d1fee\n84831b9409646a918e8057d85ab270295158a5cd\nf4f90f7e9d4e6ddbc197815d3824b995444a70a4\n37b7b1b04e44c2ca5b9024f2b1d6e32bc004d749\n39b390a82b083b0f5de888db0b7987e9c5d799f9\n84f22c1ec485d471550c609594191fe7c1ff44eb\n601085b86cd22f859b545d1d61591e1d90cbd42c\n" > "$SDK_PATH/licenses/android-sdk-license"
+            echo -e "\n84831b9409646a918e8057d85ab270295158a5cd\n" > "$SDK_PATH/licenses/android-sdk-preview-license"
             if [ -f "$SDK_PATH/cmdline-tools/latest/bin/sdkmanager" ]; then
               yes | "$SDK_PATH/cmdline-tools/latest/bin/sdkmanager" --licenses || true
             elif [ -f "$SDK_PATH/tools/bin/sdkmanager" ]; then
