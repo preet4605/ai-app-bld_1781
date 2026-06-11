@@ -11,22 +11,22 @@ import com.generated.app.ui.components.CustomButton
 import com.generated.app.ui.theme.AppTheme
 
 @Composable
-fun SettingsScreen() {
+fun HistoryScreen() {
     AppTheme {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
             CustomButton(
                 onClick = { /* Handle button click */ },
-                text = "Save settings"
+                text = "Clear history"
             )
-            Text(text = "Settings screen")
+            Text(text = "History screen")
         }
     }
 }
 
 @Preview
 @Composable
-fun PreviewSettingsScreen() {
-    SettingsScreen()
+fun PreviewHistoryScreen() {
+    HistoryScreen()
 }
