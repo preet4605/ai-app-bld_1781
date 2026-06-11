@@ -158,7 +158,8 @@ jobs:
           EOF
           fi
 
-          if [ ! -f app/src/main/res/mipmap/ic_launcher.xml ]; then
+          # Only write default launcher fallback XML if no custom PNG is present anywhere in res
+          if [ ! -f app/src/main/res/mipmap/ic_launcher.xml ] && ! find app/src/main/res/ -name "ic_launcher.png" -print -quit | grep -q .; then
             cat << 'EOF' > app/src/main/res/mipmap/ic_launcher.xml
           <vector xmlns:android="http://schemas.android.com/apk/res/android"
               android:width="108dp"
@@ -172,7 +173,8 @@ jobs:
           EOF
           fi
 
-          if [ ! -f app/src/main/res/mipmap/ic_launcher_round.xml ]; then
+          # Only write default launcher round fallback XML if no custom round PNG is present anywhere in res
+          if [ ! -f app/src/main/res/mipmap/ic_launcher_round.xml ] && ! find app/src/main/res/ -name "ic_launcher_round.png" -print -quit | grep -q .; then
             cat << 'EOF' > app/src/main/res/mipmap/ic_launcher_round.xml
           <vector xmlns:android="http://schemas.android.com/apk/res/android"
               android:width="108dp"
