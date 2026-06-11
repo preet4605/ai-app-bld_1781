@@ -3,6 +3,9 @@ on:
   repository_dispatch:
     types: [compile_apk]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
