@@ -26,11 +26,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
         with:
-          accept-android-sdk-licenses: false
-
-      - name: Accept Android SDK Licenses
-        run: |
-          yes | sdkmanager --licenses || true
+          accept-android-sdk-licenses: true
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -45,8 +41,8 @@ jobs:
             TEMP_SETTINGS_CREATED=false
           fi
 
-          # 2. Generate Gradle wrapper files (done first to avoid Gradle 9.x evaluation errors on incompatible AGP version)
-          gradle wrapper --gradle-version 8.0
+          # 2. Generate Gradle wrapper files
+          gradle wrapper --gradle-version 8.7
 
           # 3. Overwrite with real settings.gradle.kts if we created a temporary one
           if [ "$TEMP_SETTINGS_CREATED" = "true" ]; then
@@ -74,8 +70,10 @@ jobs:
           if [ ! -f build.gradle.kts ]; then
             cat << 'EOF' > build.gradle.kts
             plugins {
-                id("com.android.application") version "8.1.1" apply false
-                id("org.jetbrains.kotlin.android") version "1.8.10" apply false
+                id("com.android.application") version "8.5.2" apply false
+                id("org.jetbrains.kotlin.android") version "2.0.21" apply false
+                id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" apply false
+                id("org.jetbrains.kotlin.plugin.serialization") version "2.0.21" apply false
             }
           EOF
           fi
@@ -97,7 +95,7 @@ jobs:
             cat << 'EOF' > app/src/main/res/values/strings.xml
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
-              <string name="app_name">Modern Gallery</string>
+              <string name="app_name">Alright Now Give</string>
           </resources>
           EOF
           fi
@@ -181,16 +179,18 @@ jobs:
             plugins {
                 id("com.android.application")
                 id("org.jetbrains.kotlin.android")
+                id("org.jetbrains.kotlin.plugin.compose")
+                id("org.jetbrains.kotlin.plugin.serialization")
             }
 
             android {
                 namespace = "com.generated.app"
-                compileSdk = 33
+                compileSdk = 35
 
                 defaultConfig {
                     applicationId = "com.generated.app"
-                    minSdk = 24
-                    targetSdk = 33
+                    minSdk = 26
+                    targetSdk = 35
                     versionCode = 1
                     versionName = "1.0"
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -215,9 +215,6 @@ jobs:
                 buildFeatures {
                     compose = true
                 }
-                composeOptions {
-                    kotlinCompilerExtensionVersion = "1.4.3"
-                }
                 packaging {
                     resources {
                         excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -226,14 +223,19 @@ jobs:
             }
 
             dependencies {
-                implementation("androidx.core:core-ktx:1.9.0")
-                implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-                implementation("androidx.activity:activity-compose:1.7.2")
-                implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+                implementation("androidx.core:core-ktx:1.15.0")
+                implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+                implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+                implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+                implementation("androidx.activity:activity-compose:1.9.3")
+                implementation(platform("androidx.compose:compose-bom:2024.12.01"))
                 implementation("androidx.compose.ui:ui")
                 implementation("androidx.compose.ui:ui-graphics")
                 implementation("androidx.compose.ui:ui-tooling-preview")
                 implementation("androidx.compose.material3:material3")
+                implementation("androidx.compose.material:material-icons-extended")
+                implementation("io.coil-kt:coil-compose:2.7.0")
+                implementation("androidx.navigation:navigation-compose:2.8.5")
             }
           EOF
           fi
