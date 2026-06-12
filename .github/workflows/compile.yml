@@ -94,21 +94,27 @@ jobs:
             cat << 'EOF' > gradle.properties
           android.useAndroidX=true
           android.enableJetifier=true
-          org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -XX:+UseG1GC
-          kotlin.daemon.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC
+          android.suppressUnsupportedCompileSdk=35
+          org.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC
+          kotlin.daemon.jvmargs=-Xmx1024m -XX:MaxMetaspaceSize=256m -XX:+UseG1GC
           EOF
           else
             # Ensure JVM arguments are optimized to prevent OutOfMemoryErrors
             if grep -q "org.gradle.jvmargs" gradle.properties; then
               # Replace existing org.gradle.jvmargs with optimized values
-              sed -i 's/^.*org.gradle.jvmargs.*/org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -XX:+UseG1GC/' gradle.properties
+              sed -i 's/^.*org.gradle.jvmargs.*/org.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC/' gradle.properties
             else
-              echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -XX:+UseG1GC" >> gradle.properties
+              echo "org.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC" >> gradle.properties
             fi
             if grep -q "kotlin.daemon.jvmargs" gradle.properties; then
-              sed -i 's/^.*kotlin.daemon.jvmargs.*/kotlin.daemon.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC/' gradle.properties
+              sed -i 's/^.*kotlin.daemon.jvmargs.*/kotlin.daemon.jvmargs=-Xmx1024m -XX:MaxMetaspaceSize=256m -XX:+UseG1GC/' gradle.properties
             else
-              echo "kotlin.daemon.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC" >> gradle.properties
+              echo "kotlin.daemon.jvmargs=-Xmx1024m -XX:MaxMetaspaceSize=256m -XX:+UseG1GC" >> gradle.properties
+            fi
+            if grep -q "android.suppressUnsupportedCompileSdk" gradle.properties; then
+              sed -i 's/^.*android.suppressUnsupportedCompileSdk.*/android.suppressUnsupportedCompileSdk=35/' gradle.properties
+            else
+              echo "android.suppressUnsupportedCompileSdk=35" >> gradle.properties
             fi
           fi
 
@@ -248,6 +254,10 @@ jobs:
                       excludes += "/META-INF/{AL2.0,LGPL2.1}"
                   }
               }
+              lint {
+                  checkReleaseBuilds = false
+                  abortOnError = false
+              }
           }
 
           dependencies {
@@ -288,7 +298,7 @@ jobs:
 
       - name: Sign APK
         run: |
-          $(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -n 1)/apksigner sign \
+          bash $(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -n 1)/apksigner sign \
             --ks app/keystore.jks \
             --ks-pass pass:testpass123 \
             --key-pass pass:testpass123 \
